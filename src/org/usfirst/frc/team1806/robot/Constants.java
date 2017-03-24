@@ -15,6 +15,12 @@ public class Constants {
 	public static double camCoder = 2350;
 	public static double maxShooterRange = 2080;
 	
+	
+	//SWATFlywheelController constants
+	public static double maxFlywheelSpeed = 3600.0; //max speed of flywheel with 100% power and fresh battery
+	public static double rpmOverTargetMult = .6; //when in the smooth adjustment zone, the multiplier when over target
+	public static double rpmUnderTargetMult = 1.3; //when in smooth adjustment zone, the multiplier when under the target
+	
 	// This is the coast range, measure this after every change min - coast, not sure if used
 	public final static double coastRange = 345;
 	
