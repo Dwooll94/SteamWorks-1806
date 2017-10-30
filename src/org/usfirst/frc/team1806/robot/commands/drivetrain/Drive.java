@@ -6,6 +6,7 @@ import org.usfirst.frc.team1806.robot.States;
 import org.usfirst.frc.team1806.robot.Commands.DrivingRequest;
 import org.usfirst.frc.team1806.robot.States.Driving;
 import org.usfirst.frc.team1806.robot.States.Shifter;
+import org.usfirst.frc.team1806.robot.utils.DriveHelper;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -14,7 +15,10 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class Drive extends Command {
     States states;
-    double deadZone = .2;
+    double deadZone = .15;
+    
+    private DriveHelper throttleHelper;
+    private DriveHelper steeringHelper;
     public Drive() {
     	states = new States();
         // Use requires() here to declare subsystem dependencies
@@ -24,22 +28,14 @@ public class Drive extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	states.drivingTracker = Driving.DRIVING;
+    	throttleHelper = new DriveHelper(deadZone, 2);
+    	steeringHelper = new DriveHelper(deadZone, 2);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 		if(states.drivingTracker == Driving.DRIVING){
-    		if(Math.abs(Robot.oi.dlsY) > deadZone && Math.abs(Robot.oi.drsX) > deadZone){
-    			Robot.driveSS.execute(Robot.oi.dlsY, Robot.oi.drsX);
-    		}else if(Math.abs(Robot.oi.dlsY) > deadZone){
-    			Robot.driveSS.execute(Robot.oi.dlsY, 0);
-    		} else if(Math.abs(Robot.oi.drsX) > deadZone){
-    			Robot.driveSS.execute(0, Robot.oi.drsX);
-    		} else if(Math.abs(Robot.oi.dlsY) > deadZone && Math.abs(Robot.oi.drsX) > deadZone && Robot.states.shifterTracker == Shifter.HIGH){
-    			Robot.driveSS.execute(Robot.oi.dlsY, Math.pow(Robot.oi.drsX, 2));
-    		} else {
-    			Robot.driveSS.execute(0, 0);
-    		}
+			Robot.driveSS.execute(throttleHelper.processDriveInput(Robot.oi.dlsY), steeringHelper.processDriveInput(Robot.oi.drsX));
 		} 
     }
 
